@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Page Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+
+    <script src="main.js"></script>-->
+
+</head>
+
+<body>
+
+   
+
+    <button class="pagamento">Realizar Pagamento</button>
+
+    <script>
+
+        var tagbody = document.body,
+
+        tagscript = document.createElement('script');
+
+      
+
+        function insertScript(token){
+
+            tagbody.appendChild(tagscript);
+
+      
+
+            tagscript.setAttribute('data-getnet-sellerid', 'f677666d-9041-4672-81f0-a19667da789a');
+
+            tagscript.setAttribute('data-getnet-token', token);
+
+            tagscript.setAttribute('data-getnet-amount', '1.00');
+
+            tagscript.setAttribute('data-getnet-customerid', '875968');
+
+            tagscript.setAttribute('data-getnet-orderid', 'ecc4c42e-164c-41a3-a304-48364c37193b');
+
+            tagscript.setAttribute('data-getnet-button-class', 'pagamento');
+
+            tagscript.setAttribute('data-getnet-installments', '1');
+
+            tagscript.setAttribute('data-getnet-customer-first-name', 'Eriberto');
+
+            tagscript.setAttribute('data-getnet-customer-last-name', ' da Silva Araujo');
+
+            tagscript.setAttribute('data-getnet-customer-document-type', 'CPF');
+
+            tagscript.setAttribute('data-getnet-customer-document-number', '03453123840');
+
+            tagscript.setAttribute('data-getnet-customer-email', 'rvaraujo.sp@gmail.com');
+
+            tagscript.setAttribute('data-getnet-customer-phone-number', '8532635052');
+
+            tagscript.setAttribute('data-getnet-customer-address-street', 'Avenida Cesar Cals');
+
+            tagscript.setAttribute('data-getnet-customer-address-street-number', '350');
+
+            tagscript.setAttribute('data-getnet-customer-address-complementary', 'AP 304');
+
+            tagscript.setAttribute('data-getnet-customer-address-neighborhood', 'Praia do Futuro');
+
+            tagscript.setAttribute('data-getnet-customer-address-city', 'Fortaleza');
+
+            tagscript.setAttribute('data-getnet-customer-address-state', 'Ceará');
+
+            tagscript.setAttribute('data-getnet-customer-address-zipcode', '60182005');
+
+            tagscript.setAttribute('data-getnet-customer-country', 'Brasil');
+
+            tagscript.setAttribute('data-getnet-shipping-address', '[{"first_name":"Eriberto","name":"Eriberto da Silva Araujo","email":"rvaraujo.sp@gmail.com","phone_number":"8532635052","shipping_amount":0,"address":{"street":"Avenida Cesar Cals","complement":"AP 304","number":"350","district":"Praia do Futuro","city":"Fortaleza","state":"Ceará","country":"Brasil","postal_code":"60182005"}}]');
+
+            tagscript.setAttribute('data-getnet-items', '[{"name": "","description": "", "value": 0, "quantity": 0,"sku": ""}]');
+
+            tagscript.setAttribute('data-getnet-url-callback', '');
+
+       
+
+            tagscript.src = "https://checkout.getnet.com.br/loader.js";
+
+        }
+
+      
+
+       
+
+      
+
+        var data = "scope=oob&grant_type=client_credentials",
+
+            bodyresponse,
+
+            base64,
+
+            xhr = new XMLHttpRequest();
+
+      
+
+        xhr.addEventListener("readystatechange", function(){
+
+            if(this.readyState === 4){
+
+            bodyresponse = JSON.parse(this.responseText);
+
+            token = bodyresponse.token_type + ' ' + bodyresponse.access_token;
+
+            insertScript(token);
+
+            console.log(bodyresponse);
+
+            }
+
+        });
+
+      
+
+       
+
+        base64 = btoa("YTc1NTI2NTktZDg0MC00NjAyLTk0NDQtYmQ2N2E3NWVlZjBjOmMzYzljM2ZjLWMyYWUtNDQ5YS05NTM5LWIzZThmNTczZmQwYg==");
+
+       
+
+        xhr.open("POST", "https://api-homologacao.getnet.com.br/auth/oauth/v2/token");
+
+        xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+
+        xhr.setRequestHeader("authorization", "Basic " + base64);
+
+        xhr.send(data);
+
+      
+
+        xhr.addEventListener('load', ev => {
+
+        // Funções compatíveis com IE e outros navegadores
+
+        var eventMethod = (window.addEventListener ? 'addEventListener' : 'attachEvent');
+
+        var eventer = window[eventMethod];
+
+        var messageEvent = (eventMethod === 'attachEvent') ? 'onmessage' : 'message';
+
+ 
+
+            // Ouvindo o evento do loader
+
+            eventer(messageEvent, function iframeMessage(e) {
+
+                var data = e.data || '';
+
+ 
+
+                switch (data.status || data) {
+
+                    // Corfirmação positiva do checkout.
+
+                    case 'success':
+
+                    console.log('Transação realizada.');
+
+                    break;
+
+ 
+
+                // Notificação de que o IFrame de checkout foi fechado a aprovação.
+
+                case 'close':
+
+                    console.log('Checkout fechado.');
+
+                    break;
+
+ 
+
+                // Notificação que um boleto foi registrado com sucesso
+
+                case 'pending':
+
+                    console.log('Boleto registrado e pendente de pagamento');
+
+                    console.log(data.detail);
+
+                    break;     
+
+ 
+
+                // Notificação que houve um erro na tentativa de pagamento
+
+                case 'error':
+
+                console.warn(data.detail.message);
+
+                break;
+
+ 
+
+                // Ignora qualquer outra mensagem
+
+                default:
+
+                    break;
+
+                }
+
+            }, false);
+
+        });
+
+       </script>
+
+ 
+
+</body>
+
+</html>
