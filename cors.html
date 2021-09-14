@@ -8,7 +8,7 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Page Title</title>
+    <title>Exemplo de Código - Integração GetNet Iframe</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -20,23 +20,22 @@
 
 <body>
 
-   
+
 
     <button class="pagamento">Realizar Pagamento</button>
 
     <script>
-
         var tagbody = document.body,
 
-        tagscript = document.createElement('script');
+            tagscript = document.createElement('script');
 
-      
 
-        function insertScript(token){
+
+        function insertScript(token) {
 
             tagbody.appendChild(tagscript);
 
-      
+
 
             tagscript.setAttribute('data-getnet-sellerid', 'f677666d-9041-4672-81f0-a19667da789a');
 
@@ -86,17 +85,17 @@
 
             tagscript.setAttribute('data-getnet-url-callback', '');
 
-       
+
 
             tagscript.src = "https://checkout.getnet.com.br/loader.js";
 
         }
 
-      
 
-       
 
-      
+
+
+
 
         var data = "scope=oob&grant_type=client_credentials",
 
@@ -106,31 +105,31 @@
 
             xhr = new XMLHttpRequest();
 
-      
 
-        xhr.addEventListener("readystatechange", function(){
 
-            if(this.readyState === 4){
+        xhr.addEventListener("readystatechange", function() {
 
-            bodyresponse = JSON.parse(this.responseText);
+            if (this.readyState === 4) {
 
-            token = bodyresponse.token_type + ' ' + bodyresponse.access_token;
+                bodyresponse = JSON.parse(this.responseText);
 
-            insertScript(token);
+                token = bodyresponse.token_type + ' ' + bodyresponse.access_token;
 
-            console.log(bodyresponse);
+                insertScript(token);
+
+                console.log(bodyresponse);
 
             }
 
         });
 
-      
 
-       
+
+
 
         base64 = btoa("YTc1NTI2NTktZDg0MC00NjAyLTk0NDQtYmQ2N2E3NWVlZjBjOmMzYzljM2ZjLWMyYWUtNDQ5YS05NTM5LWIzZThmNTczZmQwYg==");
 
-       
+
 
         xhr.open("POST", "https://api-homologacao.getnet.com.br/auth/oauth/v2/token");
 
@@ -140,19 +139,19 @@
 
         xhr.send(data);
 
-      
+
 
         xhr.addEventListener('load', ev => {
 
-        // Funções compatíveis com IE e outros navegadores
+            // Funções compatíveis com IE e outros navegadores
 
-        var eventMethod = (window.addEventListener ? 'addEventListener' : 'attachEvent');
+            var eventMethod = (window.addEventListener ? 'addEventListener' : 'attachEvent');
 
-        var eventer = window[eventMethod];
+            var eventer = window[eventMethod];
 
-        var messageEvent = (eventMethod === 'attachEvent') ? 'onmessage' : 'message';
+            var messageEvent = (eventMethod === 'attachEvent') ? 'onmessage' : 'message';
 
- 
+
 
             // Ouvindo o evento do loader
 
@@ -160,7 +159,7 @@
 
                 var data = e.data || '';
 
- 
+
 
                 switch (data.status || data) {
 
@@ -168,59 +167,58 @@
 
                     case 'success':
 
-                    console.log('Transação realizada.');
+                        console.log('Transação realizada.');
 
-                    break;
+                        break;
 
- 
 
-                // Notificação de que o IFrame de checkout foi fechado a aprovação.
 
-                case 'close':
+                        // Notificação de que o IFrame de checkout foi fechado a aprovação.
 
-                    console.log('Checkout fechado.');
+                    case 'close':
 
-                    break;
+                        console.log('Checkout fechado.');
 
- 
+                        break;
 
-                // Notificação que um boleto foi registrado com sucesso
 
-                case 'pending':
 
-                    console.log('Boleto registrado e pendente de pagamento');
+                        // Notificação que um boleto foi registrado com sucesso
 
-                    console.log(data.detail);
+                    case 'pending':
 
-                    break;     
+                        console.log('Boleto registrado e pendente de pagamento');
 
- 
+                        console.log(data.detail);
 
-                // Notificação que houve um erro na tentativa de pagamento
+                        break;
 
-                case 'error':
 
-                console.warn(data.detail.message);
 
-                break;
+                        // Notificação que houve um erro na tentativa de pagamento
 
- 
+                    case 'error':
 
-                // Ignora qualquer outra mensagem
+                        console.warn(data.detail.message);
 
-                default:
+                        break;
 
-                    break;
+
+
+                        // Ignora qualquer outra mensagem
+
+                    default:
+
+                        break;
 
                 }
 
             }, false);
 
         });
+    </script>
 
-       </script>
 
- 
 
 </body>
 
